@@ -3,7 +3,7 @@
 Sublime plugin to change your theme or apply filters to your themes at different times of the day
 
 # Optional Dependencies
-- Applying filters requires ThemeTweaker ThemeTweaker plugin https://github.com/facelessuser/ThemeTweaker.
+- Applying filters requires ThemeTweaker plugin https://github.com/facelessuser/ThemeTweaker.
 
 # Usage
 Set your rules in `ThemeScheduler.sublime-settings` in your `User` folder (it will automatically be created).  Then set `"enabled": True`.
