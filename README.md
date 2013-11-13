@@ -24,7 +24,7 @@ Example for changing themes:
     ]
 ```
 
-Example for using filters (see ThemeTweaker Repo for more info on filters):
+Example for using filters [(see ThemeTweaker filter documentation)](https://github.com/facelessuser/ThemeTweaker#custom-filter-command):
 ```javascript
     "themes":
     [
