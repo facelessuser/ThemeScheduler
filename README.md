@@ -1,6 +1,6 @@
 # ThemeScheduler
 
-Sublime plugin to change your theme or apply filters to your themes at different times of the day
+Sublime plugin to change your theme or apply filters to your themes at different times of the day. ST3 only.
 
 # Optional Dependencies
 - Applying filters requires ThemeTweaker plugin https://github.com/facelessuser/ThemeTweaker.
