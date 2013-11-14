@@ -36,16 +36,15 @@ from .lib.file_strip.json import sanitize_json
 from .lib.multiconf import get as multiget
 import json
 from os.path import exists, join, abspath, dirname
-try:
-    from ThemeTweaker.theme_tweaker import ThemeTweaker
-except:
-    print("ThemeScheduler: Could not load ThemeTweaker")
-    ThemeTweaker = None
+
+
+def log(s):
+    print("ThemeScheduler: %s" % s)
 
 
 def debug_log(s):
     if SETTINGS.get("debug", False):
-        print("ThemeScheduler: %s" % s)
+        log(s)
 
 
 def create_settings(settings_path):
@@ -113,13 +112,15 @@ class ThemeScheduler(object):
     busy = False
     update = False
     current_time = None
+    set_safe = False
 
     @classmethod
-    def init(cls):
+    def init(cls, set_safe=False):
         """
         Initialize theme changer object
         """
         cls.ready = False
+        cls.set_safe = set_safe
 
         cls.themes = []
         for t in multiget(SETTINGS, "themes", []):
@@ -222,28 +223,20 @@ class ThemeScheduler(object):
         cls.get_next_change(seconds, now)
 
     @classmethod
-    def update_theme(cls, theme, msg, filters):
-        # When sublime is loading, the User preference file isn't available yet.
-        # Sublime provides no real way to tell when things are intialized.
-        # Handling the preference file ourselves allows us to avoid obliterating the User preference file.
-        debug_log("Theme: %s" % str(theme))
-        debug_log("Msg: %s" % str(msg))
-        debug_log("Filters: %s" % str(filters))
-        cls.busy = True
+    def tweak_theme(cls, theme, msg, filters):
         relase_busy = True
-        pref_file = join(sublime.packages_path(), 'User', 'Preferences.sublime-settings')
-        pref = {}
-        if filters is not None:
-            if ThemeTweaker is not None:
-                debug_log("Using Theme Tweaker to adjust file!")
-                ThemeTweaker(True, theme).run(filters)
-                if msg is not None and isinstance(msg, str):
-                    relase_busy = False
-                    sublime.set_timeout(lambda: blocking_message(msg), 3000)
-            else:
-                debug_log("ThemeTweaker is not installed :(")
-        else:
-            debug_log("Selecting installed theme!")
+        debug_log("Using Theme Tweaker to adjust file!")
+        sublime.run_command("theme_tweaker_custom", {"theme": theme, "filters": filters})
+        if msg is not None and isinstance(msg, str):
+            relase_busy = False
+            sublime.set_timeout(lambda: blocking_message(msg), 3000)
+        return relase_busy
+
+    @classmethod
+    def swap_theme(cls, theme, msg):
+        relase_busy = True
+        debug_log("Selecting installed theme!")
+        if cls.set_safe:
             if exists(pref_file):
                 try:
                     with open(pref_file, "r") as f:
@@ -262,6 +255,33 @@ class ThemeScheduler(object):
                     sublime.set_timeout(lambda: blocking_message(msg), 3000)
             except:
                 pass
+        else:
+            sublime.load_settings("Preferences.sublime-settings").set("color_scheme", theme)
+            if msg is not None and isinstance(msg, str):
+                relase_busy = False
+                sublime.set_timeout(lambda: blocking_message(msg), 3000)
+        return relase_busy
+
+    @classmethod
+    def update_theme(cls, theme, msg, filters):
+        # When sublime is loading, the User preference file isn't available yet.
+        # Sublime provides no real way to tell when things are intialized.
+        # Handling the preference file ourselves allows us to avoid obliterating the User preference file.
+        debug_log("Theme: %s" % str(theme))
+        debug_log("Msg: %s" % str(msg))
+        debug_log("Filters: %s" % str(filters))
+        cls.busy = True
+        relase_busy = True
+        pref_file = join(sublime.packages_path(), 'User', 'Preferences.sublime-settings')
+        pref = {}
+        if filters is not None:
+            if is_tweakable():
+                cls.tweak_theme(theme, msg, filters)
+            else:
+                debug_log("ThemeTweaker is not installed :(")
+                cls.swap_theme(theme, msg)
+        else:
+            cls.swap_theme(theme, msg)
 
         if relase_busy:
             cls.busy = False
@@ -330,29 +350,64 @@ def manage_thread(first_time=False, restart=False):
     if not multiget(SETTINGS, 'enabled', 'False'):
         running_theme_scheduler_loop = False
         ThreadMgr.kill
-        debug_log("Kill Thread")
+        log("Kill Thread")
     elif not restart and (first_time or not running_theme_scheduler_loop):
         running_theme_scheduler_loop = True
         thread.start_new_thread(theme_loop, ())
-        debug_log("Start Thread")
+        log("Start Thread")
     else:
         running_theme_scheduler_loop = False
         ThreadMgr.restart = True
-        debug_log("Restart Thread")
+        log("Restart Thread")
+
+
+def is_tweakable():
+    tweakable = False
+    for app_command in sublime_plugin.application_command_classes:
+        if app_command.__name__ == "ThemeTweakerIsReadyCommand":
+            tweakable = app_command.is_tweakable()
+            break
+    return tweakable
+
+
+def tweak_loaded():
+    tweak_ready_command = None
+    ready = False
+    for app_command in sublime_plugin.application_command_classes:
+        if app_command.__name__ == "ThemeTweakerIsReadyCommand":
+            tweak_ready_command = app_command
+            break
+    if tweak_ready_command is not None:
+        ready = tweak_ready_command.is_tweakable()
+    else:
+        ready = True
+    return ready
+
+
+def load_plugin(retries):
+    global SETTINGS
+
+    if tweak_loaded() or retries == 0:
+        log("ThemeScheduler: Loading...")
+        settings_file = "ThemeScheduler.sublime-settings"
+        settings_path = join(sublime.packages_path(), 'User', settings_file)
+        if not exists(settings_path):
+            create_settings(settings_path)
+
+        # Init the settings object
+        SETTINGS = sublime.load_settings(settings_file)
+        SETTINGS.clear_on_change('reload')
+        SETTINGS.add_on_change('reload', manage_thread)
+
+        first_time = not 'running_theme_scheduler_loop' in globals()
+        global running_theme_scheduler_loop
+        running_theme_scheduler_loop = not first_time
+        manage_thread(first_time, not first_time)
+    else:
+        retries_left = retries - 1
+        log("ThemeScheduler: Waiting for ThemeTweaker...")
+        sublime.set_timeout_async(lambda: plugin_loaded(retries_left), 300)
+
 
 def plugin_loaded():
-    global SETTINGS
-    settings_file = "ThemeScheduler.sublime-settings"
-    settings_path = join(sublime.packages_path(), 'User', settings_file)
-    if not exists(settings_path):
-        create_settings(settings_path)
-
-    # Init the settings object
-    SETTINGS = sublime.load_settings(settings_file)
-    SETTINGS.clear_on_change('reload')
-    SETTINGS.add_on_change('reload', manage_thread)
-
-    first_time = not 'running_theme_scheduler_loop' in globals()
-    global running_theme_scheduler_loop
-    running_theme_scheduler_loop = not first_time
-    manage_thread(first_time, not first_time)
+    load_plugin(5)
