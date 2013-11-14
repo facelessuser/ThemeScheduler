@@ -407,7 +407,7 @@ def load_plugin(retries):
     else:
         retries_left = retries - 1
         log("ThemeScheduler: Waiting for ThemeTweaker...")
-        sublime.set_timeout_async(lambda: load_plugin(retries_left), 300)
+        sublime.set_timeout(lambda: load_plugin(retries_left), 300)
 
 
 def plugin_loaded():
