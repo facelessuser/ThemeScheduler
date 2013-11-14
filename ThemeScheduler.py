@@ -36,6 +36,7 @@ from .lib.file_strip.json import sanitize_json
 from .lib.multiconf import get as multiget
 import json
 from os.path import exists, join, abspath, dirname
+LOAD_RETRIES = 5
 
 
 def log(s):
@@ -410,4 +411,4 @@ def load_plugin(retries):
 
 
 def plugin_loaded():
-    load_plugin(5)
+    load_plugin(LOAD_RETRIES)
