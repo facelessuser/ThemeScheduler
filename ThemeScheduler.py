@@ -271,8 +271,6 @@ class ThemeScheduler(object):
         debug_log("Theme: %s" % str(theme))
         debug_log("Msg: %s" % str(msg))
         debug_log("Filters: %s" % str(filters))
-        if cls.busy:
-            return
         cls.busy = True
         relase_busy = True
         pref_file = join(sublime.packages_path(), 'User', 'Preferences.sublime-settings')
