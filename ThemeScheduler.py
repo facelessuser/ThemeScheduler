@@ -79,8 +79,14 @@ def translate_time(t):
 
 
 def blocking_message(msg):
+    if ThemeScheduler.dialog_open:
+        print("Dialog already open!")
+        print(msg)
+        return
+    ThemeScheduler.dialog_open = True
     sublime.ok_cancel_dialog(msg)
     ThemeScheduler.update = True
+    ThemeScheduler.dialog_open = False
 
 
 class ThemeSchedulerGetNextChangeCommand(sublime_plugin.ApplicationCommand):
@@ -114,6 +120,14 @@ class ThemeScheduler(object):
     update = False
     current_time = None
     set_safe = False
+    dialog_open = False
+
+    @classmethod
+    def reset_msg_state(cls):
+        """
+        Reset teh current state of dialogs
+        """
+        cls.dialog_open = False
 
     @classmethod
     def init(cls, set_safe=False):
@@ -387,6 +401,7 @@ def tweak_loaded():
 
 def load_plugin(retries):
     global SETTINGS
+    ThemeScheduler.reset_msg_state()
 
     if tweak_loaded() or retries == 0:
         log("ThemeScheduler: Loading...")
