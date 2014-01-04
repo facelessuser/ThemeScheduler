@@ -7,6 +7,7 @@ License: MIT
 Example Theme file (ThemeScheduler.sublime-settings):
 {
     "enabled": true,
+    "use_sub_notify": false,
     "themes":
     [
         {
@@ -78,13 +79,18 @@ def translate_time(t):
     return total_seconds(timedelta(hours=tm.tm_hour, minutes=tm.tm_min, seconds=tm.tm_sec))
 
 
-def blocking_message(msg):
-    if ThemeScheduler.dialog_open:
-        print("Dialog already open!")
-        print(msg)
-        return
+def display_message(msg):
+    settings = sublime.load_settings("ThemeScheduler.sublime-settings")
+    use_sub_notify = multiget(settings, "use_sub_notify", False)
     ThemeScheduler.dialog_open = True
-    sublime.ok_cancel_dialog(msg)
+    if use_sub_notify:
+        sublime.run_command("sub_notify_info", {"title": "ThemeScheduler", "msg": msg})
+    else:
+        if ThemeScheduler.dialog_open:
+            print("Dialog already open!")
+            print(msg)
+            return
+        sublime.ok_cancel_dialog(msg)
     ThemeScheduler.update = True
     ThemeScheduler.dialog_open = False
 
@@ -244,7 +250,7 @@ class ThemeScheduler(object):
         sublime.run_command("theme_tweaker_custom", {"theme": theme, "filters": filters})
         if msg is not None and isinstance(msg, str):
             relase_busy = False
-            sublime.set_timeout(lambda: blocking_message(msg), 3000)
+            sublime.set_timeout(lambda: display_message(msg), 3000)
         return relase_busy
 
     @classmethod
@@ -267,14 +273,14 @@ class ThemeScheduler(object):
                     f.write(j + "\n")
                 if msg is not None and isinstance(msg, str):
                     relase_busy = False
-                    sublime.set_timeout(lambda: blocking_message(msg), 3000)
+                    sublime.set_timeout(lambda: display_message(msg), 3000)
             except:
                 pass
         else:
             sublime.load_settings("Preferences.sublime-settings").set("color_scheme", theme)
             if msg is not None and isinstance(msg, str):
                 relase_busy = False
-                sublime.set_timeout(lambda: blocking_message(msg), 3000)
+                sublime.set_timeout(lambda: display_message(msg), 3000)
         return relase_busy
 
     @classmethod
@@ -380,30 +386,32 @@ def is_tweakable():
     tweakable = False
     for app_command in sublime_plugin.application_command_classes:
         if app_command.__name__ == "ThemeTweakerIsReadyCommand":
-            tweakable = app_command.is_tweakable()
+            tweakable = app_command.is_ready()
             break
     return tweakable
 
 
-def tweak_loaded():
-    tweak_ready_command = None
-    ready = False
-    for app_command in sublime_plugin.application_command_classes:
-        if app_command.__name__ == "ThemeTweakerIsReadyCommand":
-            tweak_ready_command = app_command
-            break
-    if tweak_ready_command is not None:
-        ready = tweak_ready_command.is_tweakable()
-    else:
-        ready = True
+def external_plugins_loaded(plugins):
+    for p in plugins:
+        command = None
+        ready = False
+        for app_command in sublime_plugin.application_command_classes:
+            if app_command.__name__ == p:
+                command = app_command
+                break
+        if command is not None:
+            ready = command.is_ready()
+        else:
+            # Command isn't found in list, so just return ready
+            ready = True
     return ready
 
 
 def load_plugin(retries):
     global SETTINGS
     ThemeScheduler.reset_msg_state()
-
-    if tweak_loaded() or retries == 0:
+    external_plugins = ["SubNotifyIsReadyCommand", "ThemeTweakerIsReadyCommand"]
+    if external_plugins_loaded(external_plugins) or retries == 0:
         log("ThemeScheduler: Loading...")
         settings_file = "ThemeScheduler.sublime-settings"
         settings_path = join(sublime.packages_path(), 'User', settings_file)
