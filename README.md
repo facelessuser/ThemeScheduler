@@ -54,3 +54,14 @@ Example for displaying messages at theme change:
         }
     ]
 ```
+
+To use SubNotify plugin for notification messages, just enable SubNotify usage (assuming SubNotify has been installed):
+
+```javascript
+{
+    "enabled": true,
+    "use_sub_notify": true,
+    "themes":
+    [
+        {
+```
