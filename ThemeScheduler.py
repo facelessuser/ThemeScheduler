@@ -84,7 +84,7 @@ def display_message(msg):
     use_sub_notify = multiget(settings, "use_sub_notify", False)
     ThemeScheduler.dialog_open = True
     if use_sub_notify:
-        sublime.run_command("sub_notify_info", {"title": "ThemeScheduler", "msg": msg})
+        sublime.run_command("sub_notify", {"title": "ThemeScheduler", "msg": msg})
     else:
         if ThemeScheduler.dialog_open:
             print("Dialog already open!")
