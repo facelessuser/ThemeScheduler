@@ -36,8 +36,10 @@ import _thread as thread
 from .lib.file_strip.json import sanitize_json
 from .lib.multiconf import get as multiget
 import json
-from os.path import exists, join, abspath, dirname
+from os.path import exists, join
+
 LOAD_RETRIES = 5
+SETTINGS = {}
 
 
 def log(s):
@@ -258,6 +260,8 @@ class ThemeScheduler(object):
         relase_busy = True
         debug_log("Selecting installed theme!")
         if cls.set_safe:
+            pref_file = join(sublime.packages_path(), 'User', 'Preferences.sublime-settings')
+            pref = {}
             if exists(pref_file):
                 try:
                     with open(pref_file, "r") as f:
@@ -293,8 +297,6 @@ class ThemeScheduler(object):
         debug_log("Filters: %s" % str(filters))
         cls.busy = True
         relase_busy = True
-        pref_file = join(sublime.packages_path(), 'User', 'Preferences.sublime-settings')
-        pref = {}
         if filters is not None:
             if is_tweakable():
                 cls.tweak_theme(theme, msg, filters)
@@ -423,7 +425,7 @@ def load_plugin(retries):
         SETTINGS.clear_on_change('reload')
         SETTINGS.add_on_change('reload', manage_thread)
 
-        first_time = not 'running_theme_scheduler_loop' in globals()
+        first_time = 'running_theme_scheduler_loop' not in globals()
         global running_theme_scheduler_loop
         running_theme_scheduler_loop = not first_time
         manage_thread(first_time, not first_time)
