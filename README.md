@@ -55,6 +55,38 @@ Example for displaying messages at theme change:
     ]
 ```
 
+Example for setting the UI theme
+```javascript
+{
+    // Lunch
+    "theme": "Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme",
+    "filters": "brightness(.96)@bg;glow(.1)",
+    "time": "12:00",
+    "msg": "Lunch time!",
+    "ui_theme": "Aprosopo Dark@st3.sublime-theme",
+    "time": "21:00"
+},
+```
+
+Example for running an ApplicationCommand (Application only!)
+```javascript
+{
+    // Lunch
+    "theme": "Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme",
+    "filters": "brightness(.96)@bg;glow(.1)",
+    "time": "12:00",
+    "msg": "Lunch time!",
+    "command": {
+        "command": "set_aprosopo_theme", "args":
+        {
+            "theme": "light",
+            "color": "blue"
+        }
+    },
+    "time": "21:00"
+},
+```
+
 To use SubNotify plugin for notification messages, just enable SubNotify usage (assuming SubNotify has been installed):
 
 ```javascript
