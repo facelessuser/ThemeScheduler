@@ -265,6 +265,7 @@ class ThemeScheduler(object):
             ui_theme = cls.next_change.ui_theme
             command = cls.next_change.command
             cls.current_theme = theme
+            cls.current_ui_theme = ui_theme
             cls.current_msg = msg
             cls.current_filters = filters
             # Get the next before changing
