@@ -81,6 +81,14 @@ def translate_time(t):
     return total_seconds(timedelta(hours=tm.tm_hour, minutes=tm.tm_min, seconds=tm.tm_sec))
 
 
+def tx_seconds(total):
+    seconds = total % 60
+    t_minutes = (total / 60)
+    minutes = t_minutes % 60
+    hours = t_minutes / 60
+    return "%02d:%02d:%02d" % (hours, minutes, seconds)
+
+
 def display_message(msg):
     settings = sublime.load_settings("ThemeScheduler.sublime-settings")
     use_sub_notify = multiget(settings, "use_sub_notify", False)
@@ -108,7 +116,13 @@ class ThemeSchedulerRefreshCommand(sublime_plugin.ApplicationCommand):
 
 
 class ThemeRecord(namedtuple('ThemeRecord', ["time", "theme", "msg", "filters", "ui_theme", "command"])):
-    pass
+    def __str__(self):
+        return 'ThemeRecord(\n    time=%s,\n    theme=%s,\n    msg=%s,\n    filters=%s,\n    ui_theme=%s,\n    command=%s\n)' % (
+            tx_seconds(self.time), str(self.theme), str(self.msg),
+            str(self.filters), str(self.ui_theme), str(self.command)
+        )
+
+    __repr__ = __str__
 
 
 class CommandWrapper(object):
@@ -323,11 +337,11 @@ class ThemeScheduler(object):
         # When sublime is loading, the User preference file isn't available yet.
         # Sublime provides no real way to tell when things are intialized.
         # Handling the preference file ourselves allows us to avoid obliterating the User preference file.
-        debug_log("Theme: %s" % str(theme))
-        debug_log("Msg: %s" % str(msg))
-        debug_log("Filters: %s" % str(filters))
-        debug_log("UI Theme: %s" % str(ui_theme))
-        debug_log("Command: %s" % str(command))
+        debug_log(
+            "update_theme(\n    theme=%s\n    msg=%s,\n    filters=%s,\n    ui_theme=%s,\n    command=%s\n)" % (
+                str(theme), str(msg), str(filters), str(ui_theme), str(command)
+            )
+        )
         cls.busy = True
         if filters is not None:
             if is_tweakable():
@@ -377,25 +391,25 @@ def theme_loop():
             ThemeScheduler.update = False
             ThemeScheduler.busy = False
             debug_log("Button defferal")
-            debug_log("is busy: %s" % str(ThemeScheduler.busy))
+            debug_log("Is busy: %s" % str(ThemeScheduler.busy))
             debug_log(
-                "Compare: day: %s now: %s next: %s seconds: %s" % (
+                "Compare: day: %s now: %s next: %s current: %s" % (
                     str(ThemeScheduler.day) if ThemeScheduler.day is not None else "None",
                     str(now.day),
-                    str(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
-                    str(seconds)
+                    tx_seconds(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
+                    tx_seconds(seconds)
                 )
             )
             sublime.set_timeout(lambda: ThemeScheduler.get_next_change(seconds, now, startup=True), 0)
         elif ThemeScheduler.ready and is_update_time(seconds, now):
             debug_log("Time to update")
-            debug_log("is busy: %s" % str(ThemeScheduler.busy))
+            debug_log("Is busy: %s" % str(ThemeScheduler.busy))
             debug_log(
-                "Compare: day: %s now: %s next: %s seconds: %s" % (
+                "Compare: day: %s now: %s next: %s current: %s" % (
                     str(ThemeScheduler.day) if ThemeScheduler.day is not None else "None",
                     str(now.day),
-                    str(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
-                    str(seconds)
+                    tx_seconds(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
+                    tx_seconds(seconds)
                 )
             )
             sublime.set_timeout(lambda: ThemeScheduler.change_theme(), 0)
