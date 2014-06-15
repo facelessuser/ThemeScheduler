@@ -163,7 +163,7 @@ class ThemeScheduler(object):
     @classmethod
     def reset_msg_state(cls):
         """
-        Reset teh current state of dialogs
+        Reset the current state of dialogs
         """
         cls.dialog_open = False
 
@@ -210,7 +210,9 @@ class ThemeScheduler(object):
             cls.next_change = closest
         elif lowest is not None:
             cls.next_change = lowest
-            cls.day = now.day
+        if lowest is not None:
+            cls.lowest = lowest
+        cls.day = now.day
 
         debug_log("%s - Next Change @ %s" % (time.ctime(), str(cls.next_change)))
 
@@ -405,8 +407,9 @@ def theme_loop():
             not ThemeScheduler.update
         ):
             update = (
-                (ThemeScheduler.day is None and seconds >= ThemeScheduler.next_change.time) or
-                (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.next_change.time)
+                (ThemeScheduler.day == now.day and seconds >= ThemeScheduler.next_change.time) or
+                (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.next_change.time) or
+                (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.lowest.time)
             )
         return update
 
