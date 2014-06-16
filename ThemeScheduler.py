@@ -407,7 +407,10 @@ def theme_loop():
             not ThemeScheduler.update
         ):
             update = (
-                (ThemeScheduler.day == now.day and seconds >= ThemeScheduler.next_change.time) or
+                (
+                    ThemeScheduler.day == now.day and seconds >= ThemeScheduler.next_change.time and
+                    ThemeScheduler.next_change.time != ThemeScheduler.lowest.time
+                ) or
                 (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.next_change.time) or
                 (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.lowest.time)
             )
