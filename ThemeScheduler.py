@@ -172,6 +172,8 @@ class ThemeScheduler(object):
         """
         Initialize theme changer object
         """
+
+        cls.busy = True
         cls.ready = False
         cls.set_safe = set_safe
 
@@ -189,6 +191,7 @@ class ThemeScheduler(object):
         seconds, now = get_current_time()
         cls.update_theme(seconds, now)
         cls.ready = True
+        cls.busy = False
 
     @classmethod
     def update_next(cls, seconds, now):
@@ -200,7 +203,7 @@ class ThemeScheduler(object):
         closest = None
         lowest = None
         for t in cls.themes:
-            if seconds <= t.time and (closest is None or t.time < closest.time):
+            if seconds < t.time and (closest is None or t.time < closest.time):
                 closest = t
             if lowest is None or t.time < lowest.time:
                 lowest = t
@@ -263,6 +266,7 @@ class ThemeScheduler(object):
         Maybe this can be removed in the future.
         """
 
+        cls.busy = True
         update = True
         last_next = cls.next_change
         cls.update_next(seconds, now)
@@ -278,6 +282,7 @@ class ThemeScheduler(object):
         if update:
             debug_log("After dialog - Update needed.")
             cls.update_current()
+        cls.busy = False
 
     @classmethod
     def on_change(cls, seconds, now):
@@ -285,6 +290,7 @@ class ThemeScheduler(object):
         Change the theme and get the next time point to change themes.
         """
 
+        cls.busy = True
         # Change the theme
         if (
             cls.next_change is not None and
@@ -303,6 +309,7 @@ class ThemeScheduler(object):
             update = False
 
         cls.update_theme(seconds, now, update)
+        cls.busy = False
 
     @classmethod
     def set_theme(cls, theme, ui_theme):
@@ -352,8 +359,6 @@ class ThemeScheduler(object):
         Update theme.  Set the theme, then get the next one in line.
         """
 
-        cls.busy = True
-
         debug_log(
             "apply_changes(\n    theme=%s\n    msg=%s,\n    filters=%s,\n    ui_theme=%s,\n    command=%s\n)" % (
                 theme, msg, filters, ui_theme, command
@@ -391,8 +396,6 @@ class ThemeScheduler(object):
         if msg is not None and isinstance(msg, str):
             sublime.set_timeout(lambda m=msg: display_message(m), 3000)
 
-        cls.busy = False
-
 
 def theme_loop():
     """
@@ -404,7 +407,8 @@ def theme_loop():
         if (
             not ThemeScheduler.busy and
             ThemeScheduler.next_change is not None and
-            not ThemeScheduler.update
+            not ThemeScheduler.update and
+            ThemeScheduler.day is not None
         ):
             update = (
                 (
