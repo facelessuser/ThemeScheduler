@@ -217,12 +217,16 @@ class ThemeScheduler(object):
             cls.lowest = lowest
 
         if (cls.next_change == cls.lowest.time and seconds < cls.lowest.time):
+            # The next change is the first of the next day
+            # But the time is not greater meaning we are already
+            # the next day, intialize to -1 to signify the last good
+            # change was yesterday.
             cls.day = -1
         else:
-            # Intialize with something if day is none
+            # Copy the day in which the next change was picked
             cls.day = now.day
 
-        debug_log("Today")
+        debug_log("Today = %d" % cls.day)
         debug_log("%s - Next Change @ %s" % (time.ctime(), str(cls.next_change)))
 
     @classmethod
@@ -416,14 +420,22 @@ def theme_loop():
             not ThemeScheduler.update and
             ThemeScheduler.day is not None
         ):
-            update = (
-                (
-                    ThemeScheduler.day == now.day and seconds >= ThemeScheduler.next_change.time and
+            if ThemeScheduler.day == now.day:
+                # Comparing time on the same day
+                # If the next change also equals the lowest,
+                # it is the first change of the day.
+                # Wait for the next day.
+                update = (
+                    seconds >= ThemeScheduler.next_change.time and
                     ThemeScheduler.next_change.time != ThemeScheduler.lowest.time
-                ) or
-                (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.next_change.time) or
-                (ThemeScheduler.day != now.day and seconds >= ThemeScheduler.lowest.time)
-            )
+                )
+            else:
+                # Its a new day.  If the time is greater than the next or
+                # even the lowest, update theme.
+                update = (
+                    seconds >= ThemeScheduler.next_change.time or
+                    seconds >= ThemeScheduler.lowest.time
+                )
         return update
 
     sublime.set_timeout(ThemeScheduler.init, 0)
