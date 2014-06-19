@@ -216,7 +216,7 @@ class ThemeScheduler(object):
         if lowest is not None:
             cls.lowest = lowest
 
-        if (cls.next_change == cls.lowest.time and seconds < cls.lowest.time):
+        if (cls.next_change.time == cls.lowest.time and seconds < cls.lowest.time):
             # The next change is the first of the next day
             # But the time is not greater meaning we are already
             # the next day, intialize to -1 to signify the last good
