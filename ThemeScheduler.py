@@ -215,15 +215,12 @@ class ThemeScheduler(object):
             cls.next_change = lowest
         if lowest is not None:
             cls.lowest = lowest
-        if not (cls.next_change.time == cls.lowest.time and seconds >= cls.lowest.time):
-            # If we are already on the next day when the next choice was picked,
-            # and the next choice is the first of the day,
-            # make sure tracked day doesn't equal current day
-            # by skipping day update
-            cls.day = now.day
-        elif cls.day is None:
-            # Intialize with something if day is none
+
+        if (cls.next_change == cls.lowest.time and seconds < cls.lowest.time):
             cls.day = -1
+        else:
+            # Intialize with something if day is none
+            cls.day = now.day
 
         debug_log("Today")
         debug_log("%s - Next Change @ %s" % (time.ctime(), str(cls.next_change)))
