@@ -203,7 +203,7 @@ class ThemeScheduler(object):
         closest = None
         lowest = None
         for t in cls.themes:
-            if seconds <= t.time and (closest is None or t.time < closest.time):
+            if seconds < t.time and (closest is None or t.time < closest.time):
                 closest = t
             if lowest is None or t.time < lowest.time:
                 lowest = t
