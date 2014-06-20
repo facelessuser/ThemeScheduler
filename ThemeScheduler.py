@@ -240,7 +240,7 @@ class ThemeScheduler(object):
             greatest = None
             seconds = get_current_time()[0]
             for t in cls.themes:
-                if t.time < seconds and (closest is None or t.time > closest.time):
+                if t.time <= seconds and (closest is None or t.time > closest.time):
                     closest = t
                 elif greatest is None or t.time > greatest.time:
                     greatest = t
