@@ -551,3 +551,7 @@ def load_plugin(retries):
 
 def plugin_loaded():
     load_plugin(LOAD_RETRIES)
+
+
+def plugin_unloaded():
+    ThreadMgr.kill = True
