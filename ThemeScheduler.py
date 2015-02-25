@@ -32,7 +32,7 @@ import time
 import sublime
 import sublime_plugin
 from collections import namedtuple
-import _thread as thread
+import threading
 from .lib.file_strip.json import sanitize_json
 from .lib.multiconf import get as multiget
 import json
@@ -40,6 +40,7 @@ from os.path import exists, join
 
 LOAD_RETRIES = 5
 SETTINGS = {}
+ts_thread = None
 
 
 def log(s):
@@ -137,11 +138,6 @@ class CommandWrapper(object):
 
     def run(self):
         sublime.run_command(self.cmd, self.args)
-
-
-class ThreadMgr(object):
-    restart = False
-    kill = False
 
 
 class ThemeScheduler(object):
@@ -407,95 +403,118 @@ class ThemeScheduler(object):
             sublime.set_timeout(lambda m=msg: display_message(m), 3000)
 
 
-def theme_loop():
-    """
-    Loop for checking when to change the theme.
-    """
+class TsThread(threading.Thread):
+    """ Load up defaults """
 
-    def is_update_time(seconds, now):
-        update = False
-        if (
-            not ThemeScheduler.busy and
-            ThemeScheduler.next_change is not None and
-            not ThemeScheduler.update and
-            ThemeScheduler.day is not None
-        ):
-            if ThemeScheduler.day == now.day:
-                # Comparing time on the same day
-                # If the next change also equals the lowest,
-                # it is the first change of the day.
-                # Wait for the next day.
-                update = (
-                    seconds >= ThemeScheduler.next_change.time and
-                    ThemeScheduler.next_change.time != ThemeScheduler.lowest.time
+    INIT = 0
+    POST_DIALOG = 1
+    CHANGE = 2
+
+    def __init__(self):
+        """ Setup the thread """
+        self.reset()
+        threading.Thread.__init__(self)
+
+    def reset(self):
+        """ Reset the thread variables """
+        self.abort = False
+
+    def kill(self):
+        """ Kill thread """
+        self.abort = True
+        while self.is_alive():
+            pass
+        self.reset()
+
+    def payload(self, code, s=None, n=None):
+        """ Execute payload """
+        if code == self.INIT:
+            ThemeScheduler.init()
+        elif code == self.POST_DIALOG:
+            ThemeScheduler.on_post_dialog(s, n)
+        elif code == self.CHANGE:
+            ThemeScheduler.on_change(s, n)
+
+    def run(self):
+        """ Thread loop """
+
+        def is_update_time(seconds, now):
+            update = False
+            if (
+                not ThemeScheduler.busy and
+                ThemeScheduler.next_change is not None and
+                not ThemeScheduler.update and
+                ThemeScheduler.day is not None
+            ):
+                if ThemeScheduler.day == now.day:
+                    # Comparing time on the same day
+                    # If the next change also equals the lowest,
+                    # it is the first change of the day.
+                    # Wait for the next day.
+                    update = (
+                        seconds >= ThemeScheduler.next_change.time and
+                        ThemeScheduler.next_change.time != ThemeScheduler.lowest.time
+                    )
+                else:
+                    # Its a new day.  If the time is greater than the next or
+                    # even the lowest, update theme.
+                    update = (
+                        seconds >= ThemeScheduler.next_change.time or
+                        seconds >= ThemeScheduler.lowest.time
+                    )
+            return update
+
+        sublime.set_timeout(lambda: self.payload(self.INIT), 0)
+
+        while not self.abort:
+            # Pop back into the main thread and check if time to change theme
+            seconds, now = get_current_time()
+            if ThemeScheduler.update:
+                ThemeScheduler.update = False
+                ThemeScheduler.busy = False
+                debug_log("Button defferal")
+                debug_log("Is busy: %s" % str(ThemeScheduler.busy))
+                debug_log(
+                    "Compare: day: %s now: %s next: %s current: %s" % (
+                        ThemeScheduler.day if ThemeScheduler.day is not None else "None",
+                        now.day,
+                        sec2time(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
+                        sec2time(seconds)
+                    )
                 )
-            else:
-                # Its a new day.  If the time is greater than the next or
-                # even the lowest, update theme.
-                update = (
-                    seconds >= ThemeScheduler.next_change.time or
-                    seconds >= ThemeScheduler.lowest.time
+                sublime.set_timeout(lambda s=seconds, n=now: self.payload(self.POST_DIALOG, s, n), 0)
+            elif ThemeScheduler.ready and is_update_time(seconds, now):
+                debug_log("Time to update")
+                debug_log("Is busy: %s" % str(ThemeScheduler.busy))
+                debug_log(
+                    "Compare: day: %s now: %s next: %s current: %s" % (
+                        ThemeScheduler.day if ThemeScheduler.day is not None else "None",
+                        now.day,
+                        sec2time(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
+                        sec2time(seconds)
+                    )
                 )
-        return update
-
-    sublime.set_timeout(ThemeScheduler.init, 0)
-
-    while not ThreadMgr.restart and not ThreadMgr.kill:
-        # Pop back into the main thread and check if time to change theme
-        seconds, now = get_current_time()
-        if ThemeScheduler.update:
-            ThemeScheduler.update = False
-            ThemeScheduler.busy = False
-            debug_log("Button defferal")
-            debug_log("Is busy: %s" % str(ThemeScheduler.busy))
-            debug_log(
-                "Compare: day: %s now: %s next: %s current: %s" % (
-                    ThemeScheduler.day if ThemeScheduler.day is not None else "None",
-                    now.day,
-                    sec2time(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
-                    sec2time(seconds)
-                )
-            )
-            sublime.set_timeout(lambda s=seconds, n=now: ThemeScheduler.on_post_dialog(s, n), 0)
-        elif ThemeScheduler.ready and is_update_time(seconds, now):
-            debug_log("Time to update")
-            debug_log("Is busy: %s" % str(ThemeScheduler.busy))
-            debug_log(
-                "Compare: day: %s now: %s next: %s current: %s" % (
-                    ThemeScheduler.day if ThemeScheduler.day is not None else "None",
-                    now.day,
-                    sec2time(ThemeScheduler.next_change.time) if ThemeScheduler.next_change is not None else "None",
-                    sec2time(seconds)
-                )
-            )
-            sublime.set_timeout(lambda s=seconds, n=now: ThemeScheduler.on_change(s, n), 0)
-        time.sleep(1)
-
-    if ThreadMgr.restart:
-        ThreadMgr.restart = False
-        sublime.set_timeout(manage_thread, 0)
-    if ThreadMgr.kill:
-        ThreadMgr.kill = False
+                sublime.set_timeout(lambda s=seconds, n=now: self.payload(self.CHANGE, s, n), 0)
+            time.sleep(1)
 
 
-def manage_thread(first_time=False, restart=False):
+def manage_thread():
     """
     Manage killing, starting, and restarting the thread
     """
+    global ts_thread
 
-    global running_theme_scheduler_loop
+    # global running_theme_scheduler_loop
     if not multiget(SETTINGS, 'enabled', 'False'):
-        running_theme_scheduler_loop = False
-        ThreadMgr.kill
+        if ts_thread is not None:
+            ts_thread.kill()
         log("Kill Thread")
-    elif not restart and (first_time or not running_theme_scheduler_loop):
-        running_theme_scheduler_loop = True
-        thread.start_new_thread(theme_loop, ())
-        log("Start Thread")
     else:
-        running_theme_scheduler_loop = False
-        ThreadMgr.restart = True
-        log("Restart Thread")
+        if ts_thread is not None:
+            ts_thread.kill()
+        ts_thread = TsThread()
+        ts_thread.start()
+        log("Start Thread")
 
 
 def is_tweakable():
@@ -539,10 +558,7 @@ def load_plugin(retries):
         SETTINGS.clear_on_change('reload')
         SETTINGS.add_on_change('reload', manage_thread)
 
-        first_time = 'running_theme_scheduler_loop' not in globals()
-        global running_theme_scheduler_loop
-        running_theme_scheduler_loop = not first_time
-        manage_thread(first_time, not first_time)
+        manage_thread()
     else:
         retries_left = retries - 1
         log("ThemeScheduler: Waiting for ThemeTweaker...")
@@ -554,4 +570,4 @@ def plugin_loaded():
 
 
 def plugin_unloaded():
-    ThreadMgr.kill = True
+    ts_thread.kill()
