@@ -40,7 +40,9 @@ from os.path import exists, join
 
 LOAD_RETRIES = 5
 SETTINGS = {}
-ts_thread = None
+
+if 'ts_thread' not in globals():
+    ts_thread = None
 
 
 def log(s):
