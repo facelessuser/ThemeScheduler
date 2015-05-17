@@ -1,6 +1,5 @@
 # ThemeScheduler {: .doctitle}
 Change theme and color scheme by the time of day.
-{: .doctitle-info}
 
 ---
 

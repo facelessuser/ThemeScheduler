@@ -1,5 +1,5 @@
 """
-Theme Scheduler
+Theme Scheduler.
 
 Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 License: MIT
@@ -26,7 +26,6 @@ See multiconf.py for more details.
 
 Creates theme file if it doesn't exists (turned off by default).
 """
-
 from datetime import datetime, timedelta
 import time
 import sublime
@@ -37,6 +36,7 @@ from .lib.file_strip.json import sanitize_json
 from .lib.multiconf import get as multiget
 import json
 from os.path import exists, join
+import textwrap
 
 LOAD_RETRIES = 5
 SETTINGS = {}
@@ -46,15 +46,20 @@ if 'ts_thread' not in globals():
 
 
 def log(s):
+    """Basic logging."""
     print("ThemeScheduler: %s" % s)
 
 
 def debug_log(s):
+    """Debug logging."""
+
     if SETTINGS.get("debug", False):
         log(s)
 
 
 def create_settings(settings_path):
+    """Create settings file."""
+
     err = False
     default_theme = {
         "enabled": False,
@@ -70,21 +75,29 @@ def create_settings(settings_path):
 
 
 def total_seconds(t):
+    """Get the total seconds."""
+
     return (t.microseconds + (t.seconds + t.days * 24 * 3600) * 10 ** 6) / 10 ** 6
 
 
 def get_current_time():
+    """Get the current time."""
+
     now = datetime.now()
     seconds = total_seconds(timedelta(hours=now.hour, minutes=now.minute, seconds=now.second))
     return seconds, now
 
 
 def datetime2sec(t):
+    """Convert datetime to seconds."""
+
     tm = time.strptime(t, '%H:%M')
     return total_seconds(timedelta(hours=tm.tm_hour, minutes=tm.tm_min, seconds=tm.tm_sec))
 
 
 def sec2time(total):
+    """Convert seconds to  acutal time."""
+
     seconds = total % 60
     t_minutes = (total / 60)
     minutes = t_minutes % 60
@@ -93,6 +106,8 @@ def sec2time(total):
 
 
 def display_message(msg):
+    """Display alert message."""
+
     settings = sublime.load_settings("ThemeScheduler.sublime-settings")
     use_sub_notify = multiget(settings, "use_sub_notify", False)
     if use_sub_notify:
@@ -109,18 +124,44 @@ def display_message(msg):
 
 
 class ThemeSchedulerGetNextChangeCommand(sublime_plugin.ApplicationCommand):
+
+    """Show the time and theme in queue."""
+
     def run(self):
+        """Run command."""
+
         sublime.message_dialog("ThemeScheduler: Next Change @\n" + str(ThemeScheduler.next_change))
 
 
 class ThemeSchedulerRefreshCommand(sublime_plugin.ApplicationCommand):
+
+    """Refresh the theme for the current time."""
+
     def run(self):
+        """Run command."""
+
         manage_thread()
 
 
 class ThemeRecord(namedtuple('ThemeRecord', ["time", "theme", "msg", "filters", "ui_theme", "command"])):
+
+    """ThemeRecord tuple."""
+
     def __str__(self):
-        return 'ThemeRecord(\n    time=%s,\n    theme=%s,\n    msg=%s,\n    filters=%s,\n    ui_theme=%s,\n    command=%s\n)' % (
+        """String representation of record."""
+
+        return textwrap.dedent(
+            '''
+            ThemeRecord(
+                time=%s,
+                theme=%s,
+                msg=%s,
+                filters=%s,
+                ui_theme=%s,
+                command=%s
+            )
+            '''
+        ).strip() % (
             sec2time(self.time), self.theme, self.msg,
             self.filters, self.ui_theme, self.command
         )
@@ -129,20 +170,32 @@ class ThemeRecord(namedtuple('ThemeRecord', ["time", "theme", "msg", "filters", 
 
 
 class CommandWrapper(object):
+
+    """Command wrapper that stores the command and arguments."""
+
     def __init__(self, cmd):
+        """Setup command and arguments to be run."""
+
         self.cmd = cmd["command"]
         self.args = cmd.get("args", {})
 
     def __str__(self):
+        """Return command name."""
+
         return self.cmd
 
     __repr__ = __str__
 
     def run(self):
+        """Execute command."""
+
         sublime.run_command(self.cmd, self.args)
 
 
 class ThemeScheduler(object):
+
+    """Manage theme schedule."""
+
     themes = []
     current_theme = ""
     current_msg = None
@@ -160,16 +213,12 @@ class ThemeScheduler(object):
 
     @classmethod
     def reset_msg_state(cls):
-        """
-        Reset the current state of dialogs
-        """
+        """Reset the current state of dialogs."""
         cls.dialog_open = False
 
     @classmethod
     def init(cls, set_safe=False):
-        """
-        Initialize theme changer object
-        """
+        """Initialize theme changer object."""
 
         cls.busy = True
         cls.ready = False
@@ -193,6 +242,8 @@ class ThemeScheduler(object):
 
     @classmethod
     def update_next(cls, seconds, now):
+        """Setup theme for next update."""
+
         # Reset tracker members
         cls.next_change = None
         cls.day = None
@@ -229,9 +280,7 @@ class ThemeScheduler(object):
 
     @classmethod
     def update_current(cls):
-        """
-        Set next theme
-        """
+        """Set next theme."""
 
         if cls.next_change is not None:
             closest = None
@@ -257,8 +306,11 @@ class ThemeScheduler(object):
     @classmethod
     def update_theme(cls, seconds, now, update=True):
         """
-        Get the next time point in which the theme should change.  Store the theme record.
-        Update current theme if required.
+        Update the theme.
+
+            - Get the next time point in which the theme should change.
+            - Store the theme record.
+            - Update current theme if required.
         """
 
         cls.update_next(seconds, now)
@@ -269,8 +321,8 @@ class ThemeScheduler(object):
     @classmethod
     def on_post_dialog(cls, seconds, now):
         """
-        Precation to make sure an update isn't needed
-        that was prevented because of message dialog.
+        Precaution to make sure an update isn't needed hat was prevented because of a message dialog.
+
         Maybe this can be removed in the future.
         """
 
@@ -294,9 +346,7 @@ class ThemeScheduler(object):
 
     @classmethod
     def on_change(cls, seconds, now):
-        """
-        Change the theme and get the next time point to change themes.
-        """
+        """Change the theme and get the next time point to change themes."""
 
         cls.busy = True
         # Change the theme
@@ -321,9 +371,7 @@ class ThemeScheduler(object):
 
     @classmethod
     def set_theme(cls, theme, ui_theme):
-        """
-        Apply the theme(s)
-        """
+        """Apply the theme(s)."""
 
         if cls.set_safe:
             # When sublime is loading, the User preference file isn't available yet.
@@ -363,9 +411,7 @@ class ThemeScheduler(object):
 
     @classmethod
     def apply_changes(cls, theme, msg, filters, ui_theme, command):
-        """
-        Update theme.  Set the theme, then get the next one in line.
-        """
+        """Update theme.  Set the theme, then get the next one in line."""
 
         debug_log(
             "apply_changes(\n    theme=%s\n    msg=%s,\n    filters=%s,\n    ui_theme=%s,\n    command=%s\n)" % (
@@ -406,30 +452,35 @@ class ThemeScheduler(object):
 
 
 class TsThread(threading.Thread):
-    """ Load up defaults """
+
+    """Load up defaults."""
 
     INIT = 0
     POST_DIALOG = 1
     CHANGE = 2
 
     def __init__(self):
-        """ Setup the thread """
+        """Setup the thread."""
+
         self.reset()
         threading.Thread.__init__(self)
 
     def reset(self):
-        """ Reset the thread variables """
+        """Reset the thread variables."""
+
         self.abort = False
 
     def kill(self):
-        """ Kill thread """
+        """Kill thread."""
+
         self.abort = True
         while self.is_alive():
             pass
         self.reset()
 
     def payload(self, code, s=None, n=None):
-        """ Execute payload """
+        """Execute payload."""
+
         if code == self.INIT:
             ThemeScheduler.init()
         elif code == self.POST_DIALOG:
@@ -438,7 +489,7 @@ class TsThread(threading.Thread):
             ThemeScheduler.on_change(s, n)
 
     def run(self):
-        """ Thread loop """
+        """Thread loop."""
 
         def is_update_time(seconds, now):
             update = False
@@ -501,9 +552,8 @@ class TsThread(threading.Thread):
 
 
 def manage_thread():
-    """
-    Manage killing, starting, and restarting the thread
-    """
+    """Manage killing, starting, and restarting the thread."""
+
     global ts_thread
 
     # global running_theme_scheduler_loop
@@ -520,6 +570,8 @@ def manage_thread():
 
 
 def is_tweakable():
+    """Check if ThemeTweaker is installed and ready."""
+
     tweakable = False
     for app_command in sublime_plugin.application_command_classes:
         if app_command.__name__ == "ThemeTweakerIsReadyCommand":
@@ -529,6 +581,8 @@ def is_tweakable():
 
 
 def external_plugins_loaded(plugins):
+    """Check if desired external plugins are loaded."""
+
     for p in plugins:
         command = None
         ready = False
@@ -545,6 +599,8 @@ def external_plugins_loaded(plugins):
 
 
 def load_plugin(retries):
+    """Load the plugin's theme schedule and make sure everything is ready."""
+
     global SETTINGS
     ThemeScheduler.reset_msg_state()
     external_plugins = ["SubNotifyIsReadyCommand", "ThemeTweakerIsReadyCommand"]
@@ -568,8 +624,12 @@ def load_plugin(retries):
 
 
 def plugin_loaded():
+    """Setup plugin."""
+
     load_plugin(LOAD_RETRIES)
 
 
 def plugin_unloaded():
+    """Tear down plugin."""
+
     ts_thread.kill()
