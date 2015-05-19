@@ -164,21 +164,21 @@ class Qualifications(object):
 
         try:
             return cls.__qualifiers[key](value)
-        except:
+        except Exception:
             raise QualException("Failed to execute %s qualifier" % key)
 
 
-def __host_match(h):
+def _host_match(h):
     """Check if the host matches the input."""
 
     return (h.lower() == __CURRENT_HOSTNAME)
 
 
-def __os_match(os):
+def _os_match(os):
     """See if the OS platform matches the input."""
 
     return (os == sublime.platform())
 
 
-Qualifications.add_qual("host", __host_match)
-Qualifications.add_qual("os", __os_match)
+Qualifications.add_qual("host", _host_match)
+Qualifications.add_qual("os", _os_match)

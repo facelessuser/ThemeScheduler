@@ -69,7 +69,7 @@ def create_settings(settings_path):
     try:
         with open(settings_path, 'w') as f:
             f.write(j + "\n")
-    except:
+    except Exception:
         err = True
     return err
 
@@ -386,7 +386,7 @@ class ThemeScheduler(object):
                         # Allow C style comments and be forgiving of trailing commas
                         content = sanitize_json(f.read(), True)
                     pref = json.loads(content)
-                except:
+                except Exception:
                     log("Failed to open preference file!")
                     return
             if ui_theme is not None:
@@ -399,7 +399,7 @@ class ThemeScheduler(object):
             try:
                 with open(pref_file, 'w') as f:
                     f.write(j + "\n")
-            except:
+            except Exception:
                 log("Failed to write preference file!")
         else:
             if ui_theme is not None:
@@ -492,6 +492,8 @@ class TsThread(threading.Thread):
         """Thread loop."""
 
         def is_update_time(seconds, now):
+            """Check if time to update."""
+
             update = False
             if (
                 not ThemeScheduler.busy and
