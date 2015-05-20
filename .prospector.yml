@@ -5,7 +5,6 @@ max-line-length: 120
 ignore-patterns:
   - docs
   - docs_theme
-  - lib/png.py
 dodgy:
   run: false
 pep257:
