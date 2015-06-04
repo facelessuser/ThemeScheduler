@@ -3,13 +3,13 @@ Configuration and usage of ThemeScheduler.
 
 ---
 
-# Optional Dependencies
+## Optional Dependencies
 - Applying filters requires ThemeTweaker plugin https://github.com/facelessuser/ThemeTweaker.
 
-# General Use
+## General Use
 Set your rules in `ThemeScheduler.sublime-settings` in your `User` folder (it will automatically be created).  Then set `"enabled": True`.
 
-## Examples
+### Examples
 Example for changing themes:
 ```javascript
     "themes":
