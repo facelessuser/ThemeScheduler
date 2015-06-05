@@ -65,9 +65,11 @@
             
                 <li class="toctree-l3"><a href="#user-guide">User Guide</a></li>
                 
-                    <li><a class="toctree-l4" href="#optional-dependencies">Optional Dependencies</a></li>
-                
                     <li><a class="toctree-l4" href="#general-use">General Use</a></li>
+                
+                    <li><a class="toctree-l4" href="#examples">Examples</a></li>
+                
+                    <li><a class="toctree-l4" href="#settings">Settings</a></li>
                 
             
             </ul>
@@ -128,14 +130,15 @@
                 <h1 class="doctitle" id="user-guide"><a name="user-content-user-guide" href="#user-guide" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>User Guide</h1>
 <p>Configuration and usage of ThemeScheduler.</p>
 <hr />
-<h2 id="optional-dependencies"><a name="user-content-optional-dependencies" href="#optional-dependencies" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Optional Dependencies</h2>
-<ul>
-<li>Applying filters requires ThemeTweaker plugin <a href="https://github.com/facelessuser/ThemeTweaker">https://github.com/facelessuser/ThemeTweaker</a>.</li>
-</ul>
 <h2 id="general-use"><a name="user-content-general-use" href="#general-use" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>General Use</h2>
 <p>Set your rules in <code>ThemeScheduler.sublime-settings</code> in your <code>User</code> folder (it will automatically be created).  Then set <code>&quot;enabled&quot;: True</code>.</p>
-<h3 id="examples"><a name="user-content-examples" href="#examples" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Examples</h3>
-<p>Example for changing themes:<br />
+<h3 id="optional-dependencies"><a name="user-content-optional-dependencies" href="#optional-dependencies" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Optional Dependencies</h3>
+<ul>
+<li>Applying filters requires <a href="https://github.com/facelessuser/ThemeTweaker">ThemeTweaker plugin</a>.</li>
+<li>Alternative notifications require the <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a>.</li>
+</ul>
+<h2 id="examples"><a name="user-content-examples" href="#examples" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Examples</h2>
+<h3 id="changing-themes"><a name="user-content-changing-themes" href="#changing-themes" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Changing Themes</h3>
 <div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
@@ -148,8 +151,10 @@
         <span class="p">}</span>
     <span class="p">]</span>
 </pre></div>
-</p>
-<p>Example for using filters <a href="https://github.com/facelessuser/ThemeTweaker#custom-filter-command">(see ThemeTweaker filter documentation)</a>:<br />
+
+
+<h3 id="using-filters"><a name="user-content-using-filters" href="#using-filters" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Using filters</h3>
+<p>See ThemeTweaker&rsquo;s <a href="http://facelessuser.github.io/ThemeTweaker/usage/#custom-filter">custom filter documentationn</a> for more info on configuring filter options.  The <code>filters</code> argument is constructed the same way.</p>
 <div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
@@ -159,13 +164,15 @@
         <span class="p">},</span>
         <span class="p">{</span>
             <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
-            <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="s2">&quot;brightness(.97)@bg&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="s2">&quot;brightness(.97)@bg;glow(.1)&quot;</span><span class="p">,</span>
             <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;11:00&quot;</span>
         <span class="p">}</span>
     <span class="p">]</span>
 </pre></div>
-</p>
-<p>Example for displaying messages at theme change:<br />
+
+
+<h3 id="displaying-messages-at-theme-change"><a name="user-content-displaying-messages-at-theme-change" href="#displaying-messages-at-theme-change" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Displaying Messages at Theme Change</h3>
+<p>Messages will be done through the Sublime API via a popup dialog.  If you using the <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> with the <code>use_subnotify</code> option enabled, messages will be displayed through SubNotify.</p>
 <div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
@@ -177,8 +184,10 @@
         <span class="p">}</span>
     <span class="p">]</span>
 </pre></div>
-</p>
-<p>Example for setting the UI theme. When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this:<br />
+
+
+<h3 id="setting-the-ui-theme"><a name="user-content-setting-the-ui-theme" href="#setting-the-ui-theme" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Setting the UI Theme</h3>
+<p>When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this, so if the results are unsatisfactory, then simply don&rsquo;t use it.</p>
 <div class="codehilite"><pre><span class="p">{</span>
     <span class="c1">// Lunch</span>
     <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
@@ -189,8 +198,10 @@
     <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;21:00&quot;</span>
 <span class="p">},</span>
 </pre></div>
-</p>
-<p>Example for running an ApplicationCommand (Application only!):<br />
+
+
+<h3 id="run-a-sublime-applicationcommand"><a name="user-content-run-a-sublime-applicationcommand" href="#run-a-sublime-applicationcommand" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Run a Sublime ApplicationCommand</h3>
+<p>Cuttently ThemeScheduler only allows <code>Application</code> commands to be run on change.  Command support allows setting the specific commands and the arguments for the command.</p>
 <div class="codehilite"><pre><span class="p">{</span>
     <span class="c1">// Lunch</span>
     <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
@@ -207,14 +218,35 @@
     <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;21:00&quot;</span>
 <span class="p">},</span>
 </pre></div>
-</p>
-<p>To use SubNotify plugin for notification messages, just enable SubNotify usage (assuming SubNotify has been installed):</p>
-<div class="codehilite"><pre><span class="p">{</span>
-    <span class="s2">&quot;enabled&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="s2">&quot;use_sub_notify&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
-    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
-    <span class="p">[</span>
-        <span class="p">{</span>
+
+
+<h2 id="settings"><a name="user-content-settings" href="#settings" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Settings</h2>
+<p>Theme Scheduler has only a small handful of settings.</p>
+<h3 id="enabled"><a name="user-content-enabled" href="#enabled" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enabled</h3>
+<p>This is a boolean that controls whether ThemeScheduler is active.</p>
+<div class="codehilite"><pre><span class="s2">&quot;enabled&quot;</span><span class="o">:</span> <span class="kc">true</span>
+</pre></div>
+
+
+<h3 id="use_sub_notify"><a name="user-content-use_sub_notify" href="#use_sub_notify" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>use_sub_notify</h3>
+<p>To use <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> for notification messages, just enable SubNotify usage (assuming SubNotify has been installed) with this setting.</p>
+<div class="codehilite"><pre><span class="s2">&quot;use_sub_notify&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+</pre></div>
+
+
+<h3 id="themes"><a name="user-content-themes" href="#themes" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>themes</h3>
+<p>This is an array of all your theme scheduler rules.</p>
+<div class="codehilite"><pre><span class="s2">&quot;themes&quot;</span><span class="o">:</span> <span class="p">[</span>
+    <span class="p">{</span>
+        <span class="c1">// Lunch</span>
+        <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="s2">&quot;brightness(.96)@bg;glow(.1)&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;12:00&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;msg&quot;</span><span class="o">:</span> <span class="s2">&quot;Lunch time!&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ui_theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Aprosopo Dark@st3.sublime-theme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;21:00&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
 </pre></div>
               
             </div>
