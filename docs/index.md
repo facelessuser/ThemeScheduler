@@ -4,7 +4,7 @@ Change theme and color scheme by the time of day.
 ---
 
 ## ThemeScheduler
-Sublime plugin to change your theme or apply filters to your themes at different times of the day. ST3 only.
+Sublime plugin to change your theme or apply filters to your theme at different times of the day.
 
 ## Features
 

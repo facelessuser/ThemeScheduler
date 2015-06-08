@@ -4,7 +4,7 @@ Configuration and usage of ThemeScheduler.
 ---
 
 ## General Use
-Set your rules in `ThemeScheduler.sublime-settings` in your `User` folder (it will automatically be created).  Then set `"enabled": True`.
+Set your rules in `User/ThemeScheduler.sublime-settings` (it will automatically be created).  Then set `#!js "enabled": True`.
 
 ### Optional Dependencies
 - Applying filters requires [ThemeTweaker plugin](https://github.com/facelessuser/ThemeTweaker).
@@ -13,7 +13,7 @@ Set your rules in `ThemeScheduler.sublime-settings` in your `User` folder (it wi
 ## Examples
 ### Changing Themes
 
-```javascript
+```js
     "themes":
     [
         {
@@ -30,7 +30,7 @@ Set your rules in `ThemeScheduler.sublime-settings` in your `User` folder (it wi
 ### Using filters
 See ThemeTweaker's [custom filter documentationn](http://facelessuser.github.io/ThemeTweaker/usage/#custom-filter) for more info on configuring filter options.  The `filters` argument is constructed the same way.
 
-```javascript
+```js
     "themes":
     [
         {
@@ -47,9 +47,9 @@ See ThemeTweaker's [custom filter documentationn](http://facelessuser.github.io/
 ```
 
 ### Displaying Messages at Theme Change
-Messages will be done through the Sublime API via a popup dialog.  If you using the [SubNotify plugin](https://github.com/facelessuser/SubNotify) with the `use_subnotify` option enabled, messages will be displayed through SubNotify.
+Messages will be done through the Sublime API via a popup dialog or status bar.  If you are using the [SubNotify plugin](https://github.com/facelessuser/SubNotify) with the `use_sub_notify` option enabled in the settings file, messages will be displayed through SubNotify.
 
-```javascript
+```js
     "themes":
     [
         {
@@ -63,9 +63,9 @@ Messages will be done through the Sublime API via a popup dialog.  If you using 
 ```
 
 ### Setting the UI Theme
-When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this, so if the results are unsatisfactory, then simply don't use it.
+When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this, so if the results are unsatisfactory, or you find yourself restarting Sublime to clear the glitches, then this feature may not be one that you want to use.  If in the future, Sublime handles theme refresh better on theme changes, this feature may become even more useful.
 
-```javascript
+```js
 {
     // Lunch
     "theme": "Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme",
@@ -78,9 +78,9 @@ When changing a theme, Sublime may look funny because it does not refresh all of
 ```
 
 ### Run a Sublime ApplicationCommand
-Cuttently ThemeScheduler only allows `Application` commands to be run on change.  Command support allows setting the specific commands and the arguments for the command.
+ThemeScheduler allows setting a specific command with arguments.  ThemeScheduler currently, only allows `Application` commands to be run on change.  You can work around this by simply writing an application command that wraps around view or windows commands if you absolutely have to run them.
 
-```javascript
+```js
 {
     // Lunch
     "theme": "Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme",
@@ -99,7 +99,7 @@ Cuttently ThemeScheduler only allows `Application` commands to be run on change.
 ```
 
 ## Settings
-Theme Scheduler has only a small handful of settings.
+Theme Scheduler has only a small handful of settings outside the theme change rules.
 
 ### enabled
 This is a boolean that controls whether ThemeScheduler is active.
@@ -109,14 +109,14 @@ This is a boolean that controls whether ThemeScheduler is active.
 ```
 
 ### use_sub_notify
-To use [SubNotify plugin](https://github.com/facelessuser/SubNotify) for notification messages, just enable SubNotify usage (assuming SubNotify has been installed) with this setting.
+To use [SubNotify plugin](https://github.com/facelessuser/SubNotify) for notification messages, just enable SubNotify usage with this setting (assuming SubNotify has been installed).
 
 ```js
 "use_sub_notify": true,
 ```
 
 ### themes
-This is an array of all your theme scheduler rules.
+This is an array of all your ThemeScheduler rules.
 
 ```js
 
