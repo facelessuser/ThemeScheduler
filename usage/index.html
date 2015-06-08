@@ -131,7 +131,7 @@
 <p>Configuration and usage of ThemeScheduler.</p>
 <hr />
 <h2 id="general-use"><a name="user-content-general-use" href="#general-use" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>General Use</h2>
-<p>Set your rules in <code>ThemeScheduler.sublime-settings</code> in your <code>User</code> folder (it will automatically be created).  Then set <code>&quot;enabled&quot;: True</code>.</p>
+<p>Set your rules in <code>User/ThemeScheduler.sublime-settings</code> (it will automatically be created).  Then set <code class="codehilite"><span class="s2">&quot;enabled&quot;</span><span class="o">:</span> <span class="nx">True</span></code>.</p>
 <h3 id="optional-dependencies"><a name="user-content-optional-dependencies" href="#optional-dependencies" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Optional Dependencies</h3>
 <ul>
 <li>Applying filters requires <a href="https://github.com/facelessuser/ThemeTweaker">ThemeTweaker plugin</a>.</li>
@@ -172,7 +172,7 @@
 
 
 <h3 id="displaying-messages-at-theme-change"><a name="user-content-displaying-messages-at-theme-change" href="#displaying-messages-at-theme-change" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Displaying Messages at Theme Change</h3>
-<p>Messages will be done through the Sublime API via a popup dialog.  If you using the <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> with the <code>use_subnotify</code> option enabled, messages will be displayed through SubNotify.</p>
+<p>Messages will be done through the Sublime API via a popup dialog or status bar.  If you are using the <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> with the <code>use_sub_notify</code> option enabled in the settings file, messages will be displayed through SubNotify.</p>
 <div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
@@ -187,7 +187,7 @@
 
 
 <h3 id="setting-the-ui-theme"><a name="user-content-setting-the-ui-theme" href="#setting-the-ui-theme" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Setting the UI Theme</h3>
-<p>When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this, so if the results are unsatisfactory, then simply don&rsquo;t use it.</p>
+<p>When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this, so if the results are unsatisfactory, or you find yourself restarting Sublime to clear the glitches, then this feature may not be one that you want to use.  If in the future, Sublime handles theme refresh better on theme changes, this feature may become even more useful.</p>
 <div class="codehilite"><pre><span class="p">{</span>
     <span class="c1">// Lunch</span>
     <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
@@ -201,7 +201,7 @@
 
 
 <h3 id="run-a-sublime-applicationcommand"><a name="user-content-run-a-sublime-applicationcommand" href="#run-a-sublime-applicationcommand" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Run a Sublime ApplicationCommand</h3>
-<p>Cuttently ThemeScheduler only allows <code>Application</code> commands to be run on change.  Command support allows setting the specific commands and the arguments for the command.</p>
+<p>ThemeScheduler allows setting a specific command with arguments.  ThemeScheduler currently, only allows <code>Application</code> commands to be run on change.  You can work around this by simply writing an application command that wraps around view or windows commands if you absolutely have to run them.</p>
 <div class="codehilite"><pre><span class="p">{</span>
     <span class="c1">// Lunch</span>
     <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
@@ -221,7 +221,7 @@
 
 
 <h2 id="settings"><a name="user-content-settings" href="#settings" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Settings</h2>
-<p>Theme Scheduler has only a small handful of settings.</p>
+<p>Theme Scheduler has only a small handful of settings outside the theme change rules.</p>
 <h3 id="enabled"><a name="user-content-enabled" href="#enabled" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enabled</h3>
 <p>This is a boolean that controls whether ThemeScheduler is active.</p>
 <div class="codehilite"><pre><span class="s2">&quot;enabled&quot;</span><span class="o">:</span> <span class="kc">true</span>
@@ -229,13 +229,13 @@
 
 
 <h3 id="use_sub_notify"><a name="user-content-use_sub_notify" href="#use_sub_notify" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>use_sub_notify</h3>
-<p>To use <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> for notification messages, just enable SubNotify usage (assuming SubNotify has been installed) with this setting.</p>
+<p>To use <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> for notification messages, just enable SubNotify usage with this setting (assuming SubNotify has been installed).</p>
 <div class="codehilite"><pre><span class="s2">&quot;use_sub_notify&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
 </pre></div>
 
 
 <h3 id="themes"><a name="user-content-themes" href="#themes" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>themes</h3>
-<p>This is an array of all your theme scheduler rules.</p>
+<p>This is an array of all your ThemeScheduler rules.</p>
 <div class="codehilite"><pre><span class="s2">&quot;themes&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
         <span class="c1">// Lunch</span>
