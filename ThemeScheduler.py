@@ -607,7 +607,7 @@ def load_plugin(retries):
     ThemeScheduler.reset_msg_state()
     external_plugins = ["SubNotifyIsReadyCommand", "ThemeTweakerIsReadyCommand"]
     if external_plugins_loaded(external_plugins) or retries == 0:
-        log("ThemeScheduler: Loading...")
+        log("Loading...")
         settings_file = "ThemeScheduler.sublime-settings"
         settings_path = join(sublime.packages_path(), 'User', settings_file)
         if not exists(settings_path):
@@ -621,7 +621,7 @@ def load_plugin(retries):
         manage_thread()
     else:
         retries_left = retries - 1
-        log("ThemeScheduler: Waiting for ThemeTweaker...")
+        log("Waiting for ThemeTweaker...")
         sublime.set_timeout(lambda: load_plugin(retries_left), 300)
 
 
