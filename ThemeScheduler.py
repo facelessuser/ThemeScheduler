@@ -124,7 +124,6 @@ def display_message(msg):
 
 
 class ThemeSchedulerGetNextChangeCommand(sublime_plugin.ApplicationCommand):
-
     """Show the time and theme in queue."""
 
     def run(self):
@@ -134,7 +133,6 @@ class ThemeSchedulerGetNextChangeCommand(sublime_plugin.ApplicationCommand):
 
 
 class ThemeSchedulerRefreshCommand(sublime_plugin.ApplicationCommand):
-
     """Refresh the theme for the current time."""
 
     def run(self):
@@ -144,7 +142,6 @@ class ThemeSchedulerRefreshCommand(sublime_plugin.ApplicationCommand):
 
 
 class ThemeRecord(namedtuple('ThemeRecord', ["time", "theme", "msg", "filters", "ui_theme", "command"])):
-
     """ThemeRecord tuple."""
 
     def __str__(self):
@@ -170,7 +167,6 @@ class ThemeRecord(namedtuple('ThemeRecord', ["time", "theme", "msg", "filters", 
 
 
 class CommandWrapper(object):
-
     """Command wrapper that stores the command and arguments."""
 
     def __init__(self, cmd):
@@ -193,7 +189,6 @@ class CommandWrapper(object):
 
 
 class ThemeScheduler(object):
-
     """Manage theme schedule."""
 
     themes = []
@@ -452,7 +447,6 @@ class ThemeScheduler(object):
 
 
 class TsThread(threading.Thread):
-
     """Load up defaults."""
 
     INIT = 0
