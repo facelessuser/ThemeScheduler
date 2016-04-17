@@ -139,7 +139,7 @@
 </ul>
 <h2 id="examples"><a name="user-content-examples" href="#examples" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Examples</h2>
 <h3 id="changing-themes"><a name="user-content-changing-themes" href="#changing-themes" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Changing Themes</h3>
-<div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
+<div class="codehilite"><pre><span></span>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/sometheme.tmTheme&quot;</span><span class="p">,</span>
@@ -153,9 +153,35 @@
 </pre></div>
 
 
+<p><a href="https://packagecontrol.io/">Package Control</a> will usually install theme packages as zip files with the <code>.sublime-package</code> extension in <code>Installed Packages</code> instead of the <code>Packages</code> folder, but you treat them as if they are stored in the <code>Packages</code> folder unzipped. Sublime handles the abstraction. For example, we will assume a package tmTheme file is installed in the root of a zipped package at <code>Installed Packages/Github Color Theme.subime-pakcage</code>:</p>
+<div class="codehilite"><pre><span></span>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
+    <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/One Dark Color Scheme/One Dark.tmTheme&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;21:30&quot;</span>
+        <span class="p">},</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/Github Color Theme/GitHub.tmTheme&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;8:30&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+</pre></div>
+
+
+<p>If a tmTheme is is installed in a sub-folder(s) within the zip, you would specify those the sub-folder(s) as well:</p>
+<div class="codehilite"><pre><span></span>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
+    <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/Github Color Theme/sub-folder/GitHub.tmTheme&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;time&quot;</span><span class="o">:</span> <span class="s2">&quot;8:30&quot;</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+</pre></div>
+
+
 <h3 id="using-filters"><a name="user-content-using-filters" href="#using-filters" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Using filters</h3>
 <p>See ThemeTweaker&rsquo;s <a href="http://facelessuser.github.io/ThemeTweaker/usage/#custom-filter">custom filter documentationn</a> for more info on configuring filter options.  The <code>filters</code> argument is constructed the same way.</p>
-<div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
+<div class="codehilite"><pre><span></span>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
             <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
@@ -173,7 +199,7 @@
 
 <h3 id="displaying-messages-at-theme-change"><a name="user-content-displaying-messages-at-theme-change" href="#displaying-messages-at-theme-change" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Displaying Messages at Theme Change</h3>
 <p>Messages will be done through the Sublime API via a popup dialog or status bar.  If you are using the <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> with the <code>use_sub_notify</code> option enabled in the settings file, messages will be displayed through SubNotify.</p>
-<div class="codehilite"><pre>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
+<div class="codehilite"><pre><span></span>    <span class="s2">&quot;themes&quot;</span><span class="o">:</span>
     <span class="p">[</span>
         <span class="p">{</span>
             <span class="c1">// Lunch</span>
@@ -188,7 +214,7 @@
 
 <h3 id="setting-the-ui-theme"><a name="user-content-setting-the-ui-theme" href="#setting-the-ui-theme" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Setting the UI Theme</h3>
 <p>When changing a theme, Sublime may look funny because it does not refresh all of the UI.  You can try resizing the window, moving the element (like a tab) or restart Sublime.  ThemeScheduler has no control over this, so if the results are unsatisfactory, or you find yourself restarting Sublime to clear the glitches, then this feature may not be one that you want to use.  If in the future, Sublime handles theme refresh better on theme changes, this feature may become even more useful.</p>
-<div class="codehilite"><pre><span class="p">{</span>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
     <span class="c1">// Lunch</span>
     <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
     <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="s2">&quot;brightness(.96)@bg;glow(.1)&quot;</span><span class="p">,</span>
@@ -202,7 +228,7 @@
 
 <h3 id="run-a-sublime-applicationcommand"><a name="user-content-run-a-sublime-applicationcommand" href="#run-a-sublime-applicationcommand" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>Run a Sublime ApplicationCommand</h3>
 <p>ThemeScheduler allows setting a specific command with arguments.  ThemeScheduler currently, only allows <code>Application</code> commands to be run on change.  You can work around this by simply writing an application command that wraps around view or windows commands if you absolutely have to run them.</p>
-<div class="codehilite"><pre><span class="p">{</span>
+<div class="codehilite"><pre><span></span><span class="p">{</span>
     <span class="c1">// Lunch</span>
     <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
     <span class="s2">&quot;filters&quot;</span><span class="o">:</span> <span class="s2">&quot;brightness(.96)@bg;glow(.1)&quot;</span><span class="p">,</span>
@@ -224,19 +250,19 @@
 <p>Theme Scheduler has only a small handful of settings outside the theme change rules.</p>
 <h3 id="enabled"><a name="user-content-enabled" href="#enabled" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>enabled</h3>
 <p>This is a boolean that controls whether ThemeScheduler is active.</p>
-<div class="codehilite"><pre><span class="s2">&quot;enabled&quot;</span><span class="o">:</span> <span class="kc">true</span>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;enabled&quot;</span><span class="o">:</span> <span class="kc">true</span>
 </pre></div>
 
 
 <h3 id="use_sub_notify"><a name="user-content-use_sub_notify" href="#use_sub_notify" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>use_sub_notify</h3>
 <p>To use <a href="https://github.com/facelessuser/SubNotify">SubNotify plugin</a> for notification messages, just enable SubNotify usage with this setting (assuming SubNotify has been installed).</p>
-<div class="codehilite"><pre><span class="s2">&quot;use_sub_notify&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;use_sub_notify&quot;</span><span class="o">:</span> <span class="kc">true</span><span class="p">,</span>
 </pre></div>
 
 
 <h3 id="themes"><a name="user-content-themes" href="#themes" class="headeranchor-link" aria-hidden="true"><span class="headeranchor"></span></a>themes</h3>
 <p>This is an array of all your ThemeScheduler rules.</p>
-<div class="codehilite"><pre><span class="s2">&quot;themes&quot;</span><span class="o">:</span> <span class="p">[</span>
+<div class="codehilite"><pre><span></span><span class="s2">&quot;themes&quot;</span><span class="o">:</span> <span class="p">[</span>
     <span class="p">{</span>
         <span class="c1">// Lunch</span>
         <span class="s2">&quot;theme&quot;</span><span class="o">:</span> <span class="s2">&quot;Packages/User/Color Scheme/Tomorrow-Night-Eighties.tmTheme&quot;</span><span class="p">,</span>
