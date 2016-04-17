@@ -27,7 +27,7 @@ Set your rules in `User/ThemeScheduler.sublime-settings` (it will automatically 
     ]
 ```
 
-For themes installed via [Package Control](https://packagecontrol.io/), you can specify their paths as if they are installed in `Packages` folder. (Package Control will usually install the packages as zip files with `.sublime-package` extension in `Installed Packages` instead to the `Packages` folder, but you treat them as if they are stored in the `Packages` folder unzipped. Sublime handles the abstraction. For example,
+[Package Control](https://packagecontrol.io/) will usually install theme packages as zip files with the `.sublime-package` extension in `Installed Packages` instead of the `Packages` folder, but you treat them as if they are stored in the `Packages` folder unzipped. Sublime handles the abstraction. For example, we will assume a package tmTheme file is installed in the root of a zipped package at `Installed Packages/Github Color Theme.subime-pakcage`:
 
 ```js
     "themes":
@@ -38,6 +38,18 @@ For themes installed via [Package Control](https://packagecontrol.io/), you can 
         },
         {
             "theme": "Packages/Github Color Theme/GitHub.tmTheme",
+            "time": "8:30"
+        }
+    ]
+```
+
+If a tmTheme is is installed in a sub-folder(s) within the zip, you would specify those the sub-folder(s) as well:
+
+```js
+    "themes":
+    [
+        {
+            "theme": "Packages/Github Color Theme/sub-folder/GitHub.tmTheme",
             "time": "8:30"
         }
     ]
