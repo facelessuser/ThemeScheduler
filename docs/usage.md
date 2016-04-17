@@ -27,6 +27,22 @@ Set your rules in `User/ThemeScheduler.sublime-settings` (it will automatically 
     ]
 ```
 
+For themes installed via [Package Control](https://packagecontrol.io/), you can specify their paths as if they are installed in `Packages` folder. (Package Control will usually install the packages as zip files with `.sublime-package` extension in `Installed Packages` instead to the `Packages` folder, but you treat them as if they are stored in the `Packages` folder unzipped. Sublime handles the abstraction. For example,
+
+```js
+    "themes":
+    [
+        {
+            "theme": "Packages/One Dark Color Scheme/One Dark.tmTheme",
+            "time": "21:30"
+        },
+        {
+            "theme": "Packages/Github Color Theme/GitHub.tmTheme",
+            "time": "8:30"
+        }
+    ]
+```
+
 ### Using filters
 See ThemeTweaker's [custom filter documentationn](http://facelessuser.github.io/ThemeTweaker/usage/#custom-filter) for more info on configuring filter options.  The `filters` argument is constructed the same way.
 
