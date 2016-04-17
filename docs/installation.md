@@ -32,4 +32,4 @@ The recommended way to install ThemeScheduler is via [Package Control](https://p
     git clone https://github.com/facelessuser/ThemeScheduler.git ThemeScheduler
     ```
 
-3 Restart Sublime Text.
+3. Restart Sublime Text.
