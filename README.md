@@ -1,19 +1,19 @@
 [![Unix Build Status][travis-image]][travis-link]
 ![License][license-image]
 # ThemeScheduler
-Sublime plugin to change your theme or apply filters to your theme at different times of the day. ST3 only.
+Sublime Text 3 plugin that changes your theme or applies filters to your theme at different times of the day.
 
-# Features
+## Features
 
 - Change your theme based on the time of day.
 - Change your color scheme based on the time of day.
 - Notifications at different times (SubNotify support available).
 - Optionally use ThemeTweaker to apply color filters.
 
-# Documentation
+## Documentation
 http://facelessuser.github.io/ThemeScheduler/
 
-# License
+## License
 Theme Scheduler is released under the MIT license.
 
 Copyright (c) 2012 - 2015 Isaac Muse <isaacmuse@gmail.com>
