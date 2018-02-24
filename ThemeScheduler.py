@@ -404,6 +404,8 @@ class ThemeScheduler(object):
                 debug_log("Selecting theme!")
                 sublime.load_settings("Preferences.sublime-settings").set("color_scheme", theme)
 
+            sublime.save_settings("Preferences.sublime-settings")
+
     @classmethod
     def apply_changes(cls, theme, msg, filters, ui_theme, command):
         """Update theme.  Set the theme, then get the next one in line."""
