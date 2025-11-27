@@ -103,7 +103,7 @@ documentation is always appreciated and can be done via pull requests.  There sh
 tests if only updating documentation.
 
 You don't have to render the docs locally before pull requesting, but if you wish to, I currently use a combination of
-[mkdocs](http://www.mkdocs.org) with my own custom Python Markdown [extensions](https://github.com/facelessuser/pymdown-extensions)
+[`mkdocs`](http://www.mkdocs.org) with my own custom Python Markdown [extensions](https://github.com/facelessuser/pymdown-extensions)
 to render the docs.  You can preview the docs if you install these two packages.  The command for previewing the docs is
 `mkdocs serve` from the root directory.
 

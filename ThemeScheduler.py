@@ -5,6 +5,8 @@ Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
 License: MIT
 
 Example Theme file (ThemeScheduler.sublime-settings):
+
+```
 {
     "enabled": true,
     "use_sub_notify": false,
@@ -20,6 +22,7 @@ Example Theme file (ThemeScheduler.sublime-settings):
         }
     ]
 }
+```
 
 Uses multiconf for "enabled" and "themes" key for platform or host specific settings.
 See multiconf.py for more details.
@@ -89,14 +92,14 @@ def get_current_time():
 
 
 def datetime2sec(t):
-    """Convert datetime to seconds."""
+    """Convert `datetime` to seconds."""
 
     tm = time.strptime(t, '%H:%M')
     return total_seconds(timedelta(hours=tm.tm_hour, minutes=tm.tm_min, seconds=tm.tm_sec))
 
 
 def sec2time(total):
-    """Convert seconds to  acutal time."""
+    """Convert seconds to  actual time."""
 
     seconds = total % 60
     t_minutes = (total / 60)
@@ -142,7 +145,7 @@ class ThemeSchedulerRefreshCommand(sublime_plugin.ApplicationCommand):
 
 
 class ThemeRecord(namedtuple('ThemeRecord', ["time", "theme", "msg", "filters", "ui_theme", "command"])):
-    """ThemeRecord tuple."""
+    """Theme record tuple."""
 
     def __str__(self):
         """String representation of record."""
@@ -263,7 +266,7 @@ class ThemeScheduler(object):
         if (cls.next_change.time == cls.lowest.time and seconds < cls.lowest.time):
             # The next change is the first of the next day
             # But the time is not greater meaning we are already
-            # the next day, intialize to -1 to signify the last good
+            # the next day, initialize to -1 to signify the last good
             # change was yesterday.
             cls.day = -1
         else:
@@ -370,7 +373,7 @@ class ThemeScheduler(object):
 
         if cls.set_safe:
             # When sublime is loading, the User preference file isn't available yet.
-            # Sublime provides no real way to tell when things are intialized.
+            # Sublime provides no real way to tell when things are initialized.
             # Handling the preference file ourselves allows us to avoid
             # obliterating the User preference file.
             pref_file = join(sublime.packages_path(), 'User', 'Preferences.sublime-settings')
@@ -607,7 +610,7 @@ def load_plugin(retries):
         if not exists(settings_path):
             create_settings(settings_path)
 
-        # Init the settings object
+        # Initialize the settings object
         SETTINGS = sublime.load_settings(settings_file)
         SETTINGS.clear_on_change('reload')
         SETTINGS.add_on_change('reload', manage_thread)

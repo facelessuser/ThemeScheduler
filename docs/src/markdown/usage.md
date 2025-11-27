@@ -63,7 +63,7 @@ If a tmTheme is is installed in a sub-folder(s) within the zip, you would specif
 
 ### Using filters
 
-See ThemeTweaker's [custom filter documentationn](http://facelessuser.github.io/ThemeTweaker/usage/#custom-filter) for
+See ThemeTweaker's [custom filter documentation](http://facelessuser.github.io/ThemeTweaker/usage/#custom-filter) for
 more info on configuring filter options.  The `filters` argument is constructed the same way.
 
 ```js
@@ -121,7 +121,7 @@ more useful.
 },
 ```
 
-### Run a Sublime ApplicationCommand
+### Run a Sublime `ApplicationCommand`
 
 ThemeScheduler allows setting a specific command with arguments.  ThemeScheduler currently, only allows `Application`
 commands to be run on change.  You can work around this by simply writing an application command that wraps around view
