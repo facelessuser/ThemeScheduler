@@ -1,8 +1,9 @@
+# noqa: A005
 """
 File Strip.
 
 Licensed under MIT
-Copyright (c) 2012 Isaac Muse <isaacmuse@gmail.com>
+Copyright (c) 2012 - 2017 Isaac Muse <isaacmuse@gmail.com>
 """
 import re
 from .comments import Comments
@@ -23,7 +24,6 @@ JSON_PATTERN = re.compile(
         )
       | (?P<code>
             "(?:\\.|[^"\\])*"            # double quoted string
-          | '(?:\\.|[^'\\])*'            # single quoted string
           | .[^,"']*                     # everything else
         )
     ''',
